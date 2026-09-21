@@ -826,9 +826,14 @@ section.design{padding-top:120px;}
 .embed-play:hover .play-icon{color:#fff;}
 
 .work-embed iframe{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  border:none;background:#fff;
+  position:absolute;
+  top:0;left:0;
+  width:1280px;
+  height:800px;
+  border:none;
+  background:#fff;
+  transform-origin:top left;
+  transform:scale(1);
   z-index:4;
   opacity:0;
   transition:opacity .5s var(--ease);
@@ -1954,15 +1959,26 @@ section.design{padding-top:120px;}
       iframe.addEventListener('load',()=>{ loaded = true; });
       iframe.addEventListener('error',()=>{ box.classList.add('failed'); });
 
-      box.appendChild(iframe);
-      box.classList.add('loaded');
+box.appendChild(iframe);
+box.classList.add('loaded');
 
-      setTimeout(()=>{
-        if(!loaded){
-          box.classList.remove('loaded');
-          box.classList.add('failed');
-        }
-      }, 4000);
+const fitIframe = ()=>{
+  const boxW = box.clientWidth;
+  const boxH = box.clientHeight;
+  const scale = Math.min(boxW / 1280, boxH / 800);
+  iframe.style.transform = 'scale(' + scale + ')';
+};
+
+window.addEventListener('resize', fitIframe);
+iframe.addEventListener('load', fitIframe);
+fitIframe();
+
+setTimeout(()=>{
+  if(!loaded){
+    box.classList.remove('loaded');
+    box.classList.add('failed');
+  }
+}, 12000);
     });
   });
 
